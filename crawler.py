@@ -9,7 +9,7 @@ def run_command(arg_list):
 
 
 def extract_text_links(url):
-    arg_list = ['lynx', '-dump', '-nonumbers'
+    arg_list = ['lynx', '-dump', '-nonumbers',
                 '-accept_all_cookies',
                 '-assume_charset=utf-8',
                 '-assume_unrec_charset=UTF-8',
