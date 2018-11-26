@@ -107,7 +107,7 @@ def parse_urls_message(message):
     return urls, ids
 
 
-def parse_crawled_data_message(message):
+def parse_crawled_message(message):
     '''
     Parses an CRWL message.
     Returns the main ID, a list of urls and the crawled text
@@ -144,6 +144,23 @@ def parse_crawled_data_message(message):
     return main_id, urls, text
 
 
+def parse_ack_message(message):
+    ''' Returns the ack code. '''
+    idx = 4
+    return message[idx: idx + 3]
+
+
+def parse_err_message(message):
+    ''' Returns the error code. '''
+    idx = 4
+    return message[idx: idx + 3]
+
+
+def extract_type(message):
+    ''' Returns the message type. '''
+    return message[:4]
+
+
 def fragment_message(message, chunk_size):
     ''' 
     Fragments a message.
@@ -155,9 +172,3 @@ def fragment_message(message, chunk_size):
         chunks.append(message[i:i + chunk_size])
 
     return chunks
-
-# URLS 0004
-# 0008 0010 pepe.com
-# 0008 0011 papa.com
-# 0009 0012 comida.pe
-# 0010 0013 hambre.asd
