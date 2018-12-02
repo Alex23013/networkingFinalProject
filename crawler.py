@@ -1,4 +1,3 @@
-import subprocess
 import re
 import sys
 
@@ -9,6 +8,9 @@ def run_command(arg_list):
 
 
 def extract_text_links(url):
+    '''
+    Returns the text and a links of links of the url's web page.
+    '''
     arg_list = ['lynx', '-dump', '-nonumbers',
                 '-accept_all_cookies',
                 '-assume_charset=utf-8',
@@ -45,7 +47,7 @@ def extract_content_type(url):
     return match[2][:4]  # Type id must  be 4 chars long.
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     #text, links = extract_text_links(sys.argv[1])
     type_ = extract_content_type(sys.argv[1])
     print(type_)

@@ -1,5 +1,7 @@
-NUMBER_CHARS = 4
-TYPE_CHARS = 4
+MESSAGE_TYPE_SIZE = 4  # Size of message type string.
+NUMBER_SIZE = 8  # Size of number string.
+TYPE_SIZE = 4  # Size of content type string.
+CODE_SIZE = 3  # Size of ack and error codes.
 
 AVAILABLE_CODE = 'AVLB'
 SEND_URLS_CODE = 'URLS'
@@ -26,39 +28,34 @@ def compose_urls(urls, ids):
         print("ERROR: URL list and ID list must have the same size.")
         return ''
 
-    composed = [SEND_URLS_CODE, str(len(urls)).zfill(NUMBER_CHARS)]
+    composed = [SEND_URLS_CODE, str(len(urls)).zfill(NUMBER_SIZE)]
     for url, id in zip(urls, ids):
-        composed.append(str(len(url)).zfill(NUMBER_CHARS))
+        composed.append(str(len(url)).zfill(NUMBER_SIZE))
         # TODO: check if the ids are strings
-        composed.append(str(id).zfill(NUMBER_CHARS))
+        composed.append(str(id).zfill(NUMBER_SIZE))
         composed.append(url)
 
     return ''.join(composed)
 
 
-def compose_crawled(main_id, urls, types, text):
+def compose_crawled(main_id, urls, text, content_type):
     '''
     Creates a CRWL message.
     main_id: id of the crawled url.
     urls: list of URLs.
-    types: list of types, must have the same size of the URLs list.
+    content_type: content type of the main url.
     text: the text content of the crawled url.
     '''
-
-    if (len(urls) != len(types)):
-        print("ERROR: URL list and Types list must have the same size.")
-        return ''
-
     # TODO: check if the ids are strings
-    composed = [SEND_CRAWLED_DATA_CODE, str(main_id).zfill(NUMBER_CHARS),
-                str(len(urls)).zfill(NUMBER_CHARS)]
-    for url, _type in zip(urls, types):
-        composed.append(str(len(url)).zfill(NUMBER_CHARS))
+    composed = [SEND_CRAWLED_DATA_CODE, str(main_id).zfill(NUMBER_SIZE),
+                str(len(urls)).zfill(NUMBER_SIZE)]
+    for url in urls:
+        composed.append(str(len(url)).zfill(NUMBER_SIZE))
         composed.append(url)
-        composed.append(_type)
 
-    composed.append(str(len(text)).zfill(NUMBER_CHARS))
+    composed.append(str(len(text)).zfill(NUMBER_SIZE))
     composed.append(text)
+    composed.append(content_type)
 
     return ''.join(composed)
 
@@ -87,18 +84,18 @@ def parse_urls_message(message):
     Returns a list of URLs and a list IDs
     '''
     idx = 4
-    urls_size = int(message[idx:idx + NUMBER_CHARS])
-    idx += NUMBER_CHARS
+    urls_size = int(message[idx:idx + NUMBER_SIZE])
+    idx += NUMBER_SIZE
 
     urls = []
     ids = []
     for i in range(urls_size):
-        url_size = int(message[idx:idx + NUMBER_CHARS])
-        idx += NUMBER_CHARS
+        url_size = int(message[idx:idx + NUMBER_SIZE])
+        idx += NUMBER_SIZE
 
-        id = message[idx:idx + NUMBER_CHARS]
+        id = message[idx:idx + NUMBER_SIZE]
         ids.append(int(id))  # TODO: check if the ids are strings
-        idx += NUMBER_CHARS
+        idx += NUMBER_SIZE
 
         url = message[idx:idx + url_size]
         urls.append(url)
@@ -110,55 +107,52 @@ def parse_urls_message(message):
 def parse_crawled_message(message):
     '''
     Parses an CRWL message.
-    Returns the main ID, a list of urls and the crawled text
+    Returns the main ID, a list of urls, the crawled text and content type.
     '''
 
     idx = 4
     # TODO: check if the ids are strings
-    main_id = int(message[idx:idx + NUMBER_CHARS])
-    idx += NUMBER_CHARS
+    main_id = int(message[idx:idx + NUMBER_SIZE])
+    idx += NUMBER_SIZE
 
-    urls_size = int(message[idx:idx + NUMBER_CHARS])
-    idx += NUMBER_CHARS
+    urls_size = int(message[idx:idx + NUMBER_SIZE])
+    idx += NUMBER_SIZE
 
     urls = []
-    types = []
 
     for i in range(urls_size):
-        url_size = int(message[idx:idx + NUMBER_CHARS])
-        idx += NUMBER_CHARS
+        url_size = int(message[idx:idx + NUMBER_SIZE])
+        idx += NUMBER_SIZE
 
         url = message[idx:idx + url_size]
         urls.append(url)
         idx += url_size
 
-        _type = message[idx:idx + TYPE_CHARS]
-        types.append(_type)
-        idx += TYPE_CHARS
-
-    text_size = int(message[idx:idx + NUMBER_CHARS])
-    idx += NUMBER_CHARS
+    text_size = int(message[idx:idx + NUMBER_SIZE])
+    idx += NUMBER_SIZE
 
     text = message[idx:idx + text_size]
+    idx += text_size
+    content_type = message[idx: idx + TYPE_SIZE]
 
-    return main_id, urls, text
+    return main_id, urls, text, content_type
 
 
 def parse_ack_message(message):
     ''' Returns the ack code. '''
     idx = 4
-    return message[idx: idx + 3]
+    return message[idx: idx + CODE_SIZE]
 
 
 def parse_err_message(message):
     ''' Returns the error code. '''
     idx = 4
-    return message[idx: idx + 3]
+    return message[idx: idx + CODE_SIZE]
 
 
 def extract_type(message):
     ''' Returns the message type. '''
-    return message[:4]
+    return message[:MESSAGE_TYPE_SIZE]
 
 
 def fragment_message(message, chunk_size):
