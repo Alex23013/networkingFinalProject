@@ -1,7 +1,7 @@
 import socket
  
-host = '127.0.0.1'
-port = 50008
+host = '192.168.218.139'
+port = 50010
  
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
@@ -11,9 +11,9 @@ print ("Connection from", addr)
 while True:
     data = conn.recv(1024)
     if not data: break
-    print("Recieved: "+(data))
+    print("Recieved: "+(data).decode())
     response = raw_input("Reply: ")
     if response == "exit":
         break
-    conn.sendall(response)
+    conn.sendall(response.encode())
 conn.close()
