@@ -1,21 +1,19 @@
-#netstat -an | grep 127
-# Save as server.py 
-# Message Receiver
-import os
-from socket import *
-host = ""
-port = 13000
-buf = 1024
-addr = (host, port)
-UDPSock = socket(AF_INET, SOCK_DGRAM)
-UDPSock.bind(addr)
-print "Waiting to receive messages..."
+import socket
+ 
+host = '127.0.0.1'
+port = 50008
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((host, port))
+s.listen(1)
+conn, addr = s.accept()
+print ("Connection from", addr)
 while True:
-    (data, addr) = UDPSock.recvfrom(buf)
-    print "Received message: " + data
-    if data == "exit":
+    data = conn.recv(1024)
+    if not data: break
+    print("Recieved: "+(data))
+    response = raw_input("Reply: ")
+    if response == "exit":
         break
-UDPSock.close()
-os._exit(0)
-
-
+    conn.sendall(response)
+conn.close()

@@ -1,15 +1,19 @@
-# Save as client.py 
-# Message Sender
-import os
-from socket import *
-host = "192.168.0.1" # set to IP address of target computer
-port = 13000
-addr = (host, port)
-UDPSock = socket(AF_INET, SOCK_DGRAM)
+import socket
+ 
+host = '127.0.0.1'
+port = 50008
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((host, port))
+print("Connected to "+(host)+" on port "+str(port))
+initialMessage = raw_input("Send: ")
+s.sendall(initialMessage)
+ 
 while True:
-    data = raw_input("Enter message to send or type 'exit': ")
-    UDPSock.sendto(data, addr)
-    if data == "exit":
-        break
-UDPSock.close()
-os._exit(0)
+ data = s.recv(1024)
+ print("Recieved: "+(data))
+ response = raw_input("Reply: ")
+ if response == "exit":
+     break
+ s.sendall(response)
+s.close()
