@@ -4,7 +4,7 @@ connections.create_connection()
 client = connections.get_connection()
 
 # name of index(like table)
-INDEX = 'test2'
+INDEX = 'links'
 
 
 class Link(Document):
