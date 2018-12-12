@@ -5,7 +5,7 @@ from protocol import (NUMBER_SIZE, TYPE_SIZE, CODE_SIZE,
 
 import protocol as prt
 
-host = '127.0.0.1'
+host = '192.168.167.8'
 port = 50018  
 chunk_size = 1024
 
