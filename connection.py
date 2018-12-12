@@ -6,7 +6,7 @@ from protocol import (NUMBER_SIZE, TYPE_SIZE, CODE_SIZE,
 import protocol as prt
 
 host = '127.0.0.1'
-port = 50016  
+port = 50018  
 chunk_size = 1024
 
 def receiveMsg (sock):
