@@ -1,29 +1,52 @@
 import socket
+from protocol import (NUMBER_SIZE, TYPE_SIZE, CODE_SIZE,
+                      AVAILABLE_CODE, SEND_URLS_CODE, SEND_CRAWLED_DATA_CODE,
+                      ACKNOWLEDGE_CODE, ERROR_CODE)
 
+import protocol as prt
 host = '127.0.0.1'
-port = 50008
+port = 50015
+chunk_size = 1024
 
+def receiveMsg (sock):
+  msgType = sock.recv(TYPE_SIZE)
+  msgType = msgType.decode()  
+  if msgType == AVAILABLE_CODE:
+    return msgType, None , None 
 
-def receiveMsg (sock, size):
-  data = sock.recv(size)
-  if data.decode() == "exit": return None
-  return data.decode()
+  if msgType == ACKNOWLEDGE_CODE or msgType == ERROR_CODE:
+    data =  sock.recv(CODE_SIZE)
+    return msgType, '', data.decode()  
 
+  if msgType == SEND_URLS_CODE or msgType == SEND_CRAWLED_DATA_CODE:
+    size = sock.recv(NUMBER_SIZE)
+    sizeInt = int(size.decode())
+    data = sock.recv(sizeInt)   
+    return msgType, size.decode(), data.decode() 
+    
+  if msgType == "exit": return '', '', ''
+  
 def sendMsg (sock,response):
-  sock.sendall(response.encode())
+  if len(response) > chunk_size :
+    fragments = prt.fragment_message(response, chunk_size )
+    for i in range(len(fragments)):
+      sock.sendall(fragments[i].encode())
+  else :  
+    sock.sendall(response.encode())
 
-def connection (role):
+def connectionClient ():
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-  if role == "client" :
-    sock.connect((host, port))
-    print("Connected to "+(host)+" on port "+str(port))
-    return sock
-  if role == "server" :
-    sock.bind((host, port))
-    sock.listen(1)
-    conn, addr = sock.accept()
-    print ("Connection from", addr)
-    return conn
+  sock.connect((host, port))
+  print("Connected to "+(host)+" on port "+str(port))
+  return sock
+  
+def connectionServer() :
+  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+  sock.bind((host, port))
+  sock.listen(1)
+  conn, addr = sock.accept()
+  print ("Connection from", addr)
+  return conn
 
     
   
