@@ -1,8 +1,8 @@
 from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
 # name of index(like table)
-IP_PORT_SERVER = '192.169.197.251:9200'
-INDEX = 'test10'
+IP_PORT_SERVER = '192.168.197.251:9200'
+INDEX = 'links'
 
 connections.create_connection()
 
@@ -85,9 +85,8 @@ def searchByIndex(index):
         return False
 
 
-def createDict(id, url, text, type, crawled=False):
+def createDict(url, text, type, crawled=False):
     newdict = {
-        'id': id,
         'url': url,
         'type': text,
         'text': type,
@@ -103,7 +102,7 @@ def updateAllFields(index, fieldDict):
         return
     # setting data
     # searched.meta.id = fieldDict['id']
-    searched.url = fieldDict['url']
+    # searched.url = fieldDict['url']
     searched.text = fieldDict['text']
     searched.type = fieldDict['type']
     searched.crawled = fieldDict['crawled']

@@ -28,13 +28,13 @@ def compose_urls(urls, ids):
     if (len(urls) != len(ids)):
         print("ERROR: URL list and ID list must have the same size.")
         return ''
-    if (not isinstance(id, str) or len(id) != ID_SIZE):
-        print("ERROR: The Id size isn't 20")
-        return ''
 
     composed = [SEND_URLS_CODE]
     content = [str(len(urls)).zfill(NUMBER_SIZE)]
     for url, id in zip(urls, ids):
+        if (not isinstance(id, str) or len(id) != ID_SIZE):
+            print("ERROR: The Id size isn't 20")
+            return ''
         content.append(str(len(url)).zfill(NUMBER_SIZE))
         # TODO: check if the ids are strings
         content.append(id)
