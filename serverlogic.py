@@ -1,23 +1,13 @@
-from ElasticSearchClient import client, INDEX
+from ElasticSearchClient import listAllDontCrawled
 from elasticsearch_dsl import Document, Search, connections, Text
 
 
 def getAllUrlsElastic():
     """Provisional method, must be implemented in ElasticSearchClient"""
-    s = Search(using=client, index=INDEX)
-    results = s.execute()
-    return results
+    return listAllDontCrawled()
 
-
-def getAllConnectedClients():
-    """ Return all connected clients """
-    return [1, 2, 3]
-
-
-def distributeUrls():
-    urls = getAllUrlsElastic()
+def distributeUrls(urls, clients):
     lenurls = len(urls)
-    clients = getAllConnectedClients()
     lenclients = len(clients)
     num = lenurls // lenclients
     if lenurls % lenclients != 0:
@@ -34,6 +24,3 @@ def distributeUrls():
         j += 1
 
     return dicturls
-
-
-print(distributeUrls())
