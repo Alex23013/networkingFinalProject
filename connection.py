@@ -4,8 +4,9 @@ from protocol import (NUMBER_SIZE, TYPE_SIZE, CODE_SIZE,
                       ACKNOWLEDGE_CODE, ERROR_CODE)
 
 import protocol as prt
+
 host = '127.0.0.1'
-port = 50015
+port = 50016  
 chunk_size = 1024
 
 def receiveMsg (sock):
@@ -42,11 +43,20 @@ def connectionClient ():
   
 def connectionServer() :
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-  sock.bind((host, port))
-  sock.listen(1)
-  conn, addr = sock.accept()
-  print ("Connection from", addr)
-  return conn
+  try:
+    sock.bind((host, port))
+    
+  except socket.error as msg:
+    print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    sys.exit()
+	
+  print('Socket bind complete')
+
+  sock.listen(5)
+  print ('Socket now listening')
+  return sock
+
+  
 
     
   

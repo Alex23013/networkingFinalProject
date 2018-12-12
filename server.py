@@ -3,7 +3,10 @@ from protocol import (AVAILABLE_CODE, SEND_URLS_CODE, SEND_CRAWLED_DATA_CODE,
                       ACKNOWLEDGE_CODE, ERROR_CODE) 
 
  
-sock = con.connectionServer()
+conn = con.connectionServer()
+sock, addr = conn.accept()
+print ("Connection from", addr)
+  
 
 while True:
   msgType, size, data = con.receiveMsg(sock)
