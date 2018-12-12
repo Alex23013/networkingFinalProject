@@ -2,7 +2,7 @@ from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
 # name of index(like table)
 IP_PORT_SERVER = '192.168.197.251:9200'
-INDEX = 'pepito11'
+INDEX = 'pepito13'
 
 connections.create_connection(timeout=60)
 
@@ -53,7 +53,8 @@ def listAllDontCrawled():
     linkscrawledList = []
     try:
         s = Search(using=client, index=INDEX).filter("term", crawled=False)
-        results = s.execute()
+        count = s.count()
+        results = s[0:count].execute()
 
         for link in results:
             print(link.meta.id, link.url, link.type, link.crawled)
@@ -112,18 +113,18 @@ def updateAllFields(index, fieldDict):
 
 
 if __name__ == '__main__':
-    new = {
-        'url': "www.id1.com",
-        'type': "link2",
-        'text': "tercertest",
-        'crawled': False
-        #'id': 1
-    }
+    # new = {
+    #     'url': "www.id1.com",
+    #     'type': "link2",
+    #     'text': "tercertest",
+    #     'crawled': False
+    #     #'id': 1
+    # }
 
-    save(new)
+    # save(new)
     # listAllDontCrawled()
     #print("----------------")
-    listAll()
+    listAllDontCrawled()
 
     #getAliases()
     '''
