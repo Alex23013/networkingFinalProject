@@ -32,9 +32,9 @@ def receiveMsg(sock):
         while num > 0:
             tm = min(num, chunk_size)
             dat = sock.recv(tm)
+            print('fragment: ', dat.decode())
             num -= tm
             datastr += dat.decode()
-
         return msgType, size.decode(), datastr
     if msgType == "cone":
         return '', '', "1"
