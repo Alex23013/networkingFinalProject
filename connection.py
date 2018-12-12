@@ -27,7 +27,15 @@ def receiveMsg(sock):
         size = sock.recv(NUMBER_SIZE)
         sizeInt = int(size.decode())
         data = sock.recv(sizeInt)
-        return msgType, size.decode(), data.decode()
+        datastr = data.decode()
+        num = sizeInt - NUMBER_SIZE - TYPE_SIZE
+        while num > 0:
+            tm = min(num, chunk_size)
+            dat = sock.recv(tm)
+            num -= tm
+            datastr += dat.decode()
+
+        return msgType, size.decode(), datastr
     if msgType == "cone":
         return '', '', "1"
     if msgType == "exit":
@@ -39,11 +47,11 @@ def receiveMsg(sock):
 
 def sendMsg(sock, response):
     if len(response) > chunk_size:
-        sock.sendall(response.encode())
+        # sock.sendall(response.encode())
 
-        # fragments = prt.fragment_message(response, chunk_size)
-        # for i in range(len(fragments)):
-        #     sock.sendall(fragments[i].encode())
+        fragments = prt.fragment_message(response, chunk_size)
+        for i in range(len(fragments)):
+            sock.sendall(fragments[i].encode())
     else:
         print("Sending: ", response)
         sock.sendall(str(response).encode())
