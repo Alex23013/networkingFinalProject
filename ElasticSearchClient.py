@@ -1,6 +1,8 @@
 from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
+# name of index(like table)
 IP_PORT_SERVER = '192.169.197.251:9200'
+INDEX = 'test10'
 
 connections.create_connection()
 
@@ -11,10 +13,6 @@ connections.configure(
 )
 
 client = connections.get_connection()
-
-# name of index(like table)
-INDEX = 'links'
-
 
 class Link(Document):
     url = Text()
@@ -33,7 +31,7 @@ def save(dataDict):
     newlink = Link()
 
     # setting data
-    newlink.meta.id = dataDict['id']
+    # newlink.meta.id = dataDict['id']
     newlink.url = dataDict['url']
     newlink.text = dataDict['text']
     newlink.type = dataDict['type']
@@ -87,8 +85,22 @@ def searchByIndex(index):
         return False
 
 
+def createDict(id, url, text, type, crawled=False):
+    newdict = {
+        'id': id,
+        'url': url,
+        'type': text,
+        'text': type,
+        'crawled': crawled
+    }
+    return newdict
+
+
 def updateAllFields(index, fieldDict):
-    searched = Link.get(index)
+    searched = searchByIndex(index)
+    if not searched:
+        print("ERROR: Index dont exist")
+        return
     # setting data
     # searched.meta.id = fieldDict['id']
     searched.url = fieldDict['url']
@@ -105,16 +117,16 @@ if __name__ == '__main__':
         'url': "www.id1.com",
         'type': "link2",
         'text': "tercertest",
-        'crawled': False,
-        'id': 1
+        'crawled': False
+        #'id': 1
     }
 
-    #save(new)
-    listAllDontCrawled()
-    print("----------------")
+    save(new)
+    # listAllDontCrawled()
+    #print("----------------")
     listAll()
 
-    getAliases()
+    #getAliases()
     '''
     new = {
         'url': "www.asdfasdf.com",
