@@ -1,19 +1,16 @@
-import socket
+import connection as con
  
-host = '127.0.0.1'
-port = 50008
- 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((host, port))
-print("Connected to "+(host)+" on port "+str(port))
+s = con.connection("client")
 initialMessage = input("Send: ")
-s.sendall(initialMessage.encode())
+con.sendMsg (s,initialMessage)
  
 while True:
- data = s.recv(1024)
- print("Recieved: "+(data).decode())
- response = input("Reply: ")
- if response == "exit":
+  data = con.receiveMsg(s, 1024)
+  if data == None: break
+  print("Recieved: "+data)
+
+  response = input("Reply: ")
+  con.sendMsg (s,response)  
+  if response == "exit":
      break
- s.sendall(response.encode())
-s.close()
+print("programFinished")
