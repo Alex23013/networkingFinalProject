@@ -2,6 +2,7 @@ MESSAGE_TYPE_SIZE = 4  # Size of message type string.
 NUMBER_SIZE = 8  # Size of number string.
 TYPE_SIZE = 4  # Size of content type string.
 CODE_SIZE = 3  # Size of ack and error codes.
+ID_SIZE = 20
 
 AVAILABLE_CODE = 'AVLB'
 SEND_URLS_CODE = 'URLS'
@@ -27,13 +28,16 @@ def compose_urls(urls, ids):
     if (len(urls) != len(ids)):
         print("ERROR: URL list and ID list must have the same size.")
         return ''
+    if (not isinstance(id, str) or len(id) != ID_SIZE):
+        print("ERROR: The Id size isn't 20")
+        return ''
 
     composed = [SEND_URLS_CODE]
     content = [str(len(urls)).zfill(NUMBER_SIZE)]
     for url, id in zip(urls, ids):
         content.append(str(len(url)).zfill(NUMBER_SIZE))
         # TODO: check if the ids are strings
-        content.append(str(id).zfill(NUMBER_SIZE))
+        content.append(id)
         content.append(url)
 
     content_str = ''.join(content)
@@ -51,9 +55,14 @@ def compose_crawled(main_id, urls, text, content_type):
     content_type: content type of the main url.
     text: the text content of the crawled url.
     '''
+
+    if (not isinstance(main_id, str) or len(main_id) != ID_SIZE):
+        print("ERROR: The Id size isn't 20")
+        return ''
+
     # TODO: check if the ids are strings
     composed = [SEND_CRAWLED_DATA_CODE]
-    content = [str(main_id).zfill(NUMBER_SIZE),
+    content = [main_id,
                str(len(urls)).zfill(NUMBER_SIZE)]
     for url in urls:
         content.append(str(len(url)).zfill(NUMBER_SIZE))
