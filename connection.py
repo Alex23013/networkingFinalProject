@@ -8,7 +8,7 @@ import sys
 
 host = '192.168.197.162'
 hostserver = "0.0.0.0"
-port = 50002
+port = 50003
 chunk_size = 1024
 
 
@@ -26,8 +26,8 @@ def receiveMsg(sock):
     if msgType == SEND_URLS_CODE or msgType == SEND_CRAWLED_DATA_CODE:
         size = sock.recv(NUMBER_SIZE)
         sizeInt = int(size.decode())
-        data = sock.recv(sizeInt)
-        datastr = data.decode()
+
+        datastr = ""
         num = sizeInt - NUMBER_SIZE - TYPE_SIZE
         print('INITIAL: ', num)
         while num > 0:
