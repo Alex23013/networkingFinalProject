@@ -1,6 +1,15 @@
 from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
+IP_PORT_SERVER = '192.169.197.251:9200'
+
 connections.create_connection()
+
+connections.configure(
+    default={
+        'hosts': IP_PORT_SERVER,
+    }
+)
+
 client = connections.get_connection()
 
 # name of index(like table)
@@ -100,10 +109,12 @@ if __name__ == '__main__':
         'id': 1
     }
 
-    save(new)
+    #save(new)
     listAllDontCrawled()
     print("----------------")
     listAll()
+
+    getAliases()
     '''
     new = {
         'url': "www.asdfasdf.com",
