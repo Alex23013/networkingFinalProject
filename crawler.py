@@ -49,7 +49,7 @@ def extract_content_type(url):
     if not match:
         return "undefined"
 
-    return match[2][:4]  # Type id must  be 4 chars long.
+    return match.group(2)[:4]  # Type id must  be 4 chars long.
 
 
 if __name__ == '__main__':
