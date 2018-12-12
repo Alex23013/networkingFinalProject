@@ -19,20 +19,24 @@ def extract_text_links(url):
                 '-display_charset=utf-8',
                 url]
 
-    all = run_command(arg_list)
-
-    idx_links = all.rfind("Visible links:")
-    idx_hidden_links = all.rfind("Hidden links:")
-
-    text = all[:idx_links]
-    links_str = all[idx_links:idx_hidden_links]
+    text = ''
     links = []
+    try:
+        all = run_command(arg_list)
 
-    if (links_str):
-        new_line_idx = links_str.find('\n')
-        links_str = links_str[new_line_idx:].strip()
-        links = list(dict.fromkeys(links_str.splitlines()))
+        idx_links = all.rfind("Visible links:")
+        idx_hidden_links = all.rfind("Hidden links:")
 
+        text = all[:idx_links]
+        links_str = all[idx_links:idx_hidden_links]
+
+        if (links_str):
+            new_line_idx = links_str.find('\n')
+            links_str = links_str[new_line_idx:].strip()
+            links = list(dict.fromkeys(links_str.splitlines()))
+    except:
+        print("++ ", url)
+        pass
     return text, links
 
 
@@ -45,7 +49,7 @@ def extract_content_type(url):
     if not match:
         return "undefined"
 
-    return match[2][:4]  # Type id must  be 4 chars long.
+    return match.group(2)[:4]  # Type id must  be 4 chars long.
 
 
 if __name__ == '__main__':
