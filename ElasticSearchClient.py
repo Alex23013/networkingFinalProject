@@ -49,33 +49,14 @@ def listAll():
         # print (link)
         print(link.meta.id, link.url, link.type)
 
-def listAllDontCrawled():
-    linkscrawledList = []
-    try:
-        s = Search(using=client, index=INDEX).filter("term", crawled=False)
-        count = s.count()
-        results = s[0:count].execute()
-
-        for link in results:
-            print(link.meta.id, link.url, link.type, link.crawled)
-            auxlink = Link()
-            auxlink.id = link.meta.id
-            auxlink.url = link.url
-            auxlink.type = link.type
-            auxlink.crawled = link.crawled
-            auxlink.text = link.text
-
-            linkscrawledList.append(auxlink)
-
-        return linkscrawledList
-    except:
-        return linkscrawledList
-
-
-def getAliases():
-    conn = client.indices.get_alias().keys()
-    print(conn)
-
+def createDict(url, text, type, crawled=False):
+    newdict = {
+        'url': url,
+        'type': text,
+        'text': type,
+        'crawled': crawled
+    }
+    return newdict
 
 def searchByIndex(index):
     try:
@@ -86,14 +67,42 @@ def searchByIndex(index):
         return False
 
 
-def createDict(url, text, type, crawled=False):
-    newdict = {
-        'url': url,
-        'type': text,
-        'text': type,
-        'crawled': crawled
-    }
-    return newdict
+def listAllDontCrawled():
+    linkscrawledList = []
+    try:
+        s = Search(using=client, index=INDEX).filter("term", crawled=False)
+        count = s.count()
+        results = s[0:count].execute()
+
+        idtemp = 0
+
+        for link in results:
+            print(link.meta.id, link.url, link.type, link.crawled)
+            auxlink = Link()
+            auxlink.id = link.meta.id
+            auxlink.url = link.url
+            auxlink.type = link.type
+            auxlink.crawled = link.crawled
+            auxlink.text = link.text
+
+            linktmp = searchByIndex(auxlink.id)
+            if not linktmp:
+                pass
+            linktmp.crawled = True
+            linktmp.save()
+            
+            linkscrawledList.append(auxlink)
+
+
+
+        return linkscrawledList
+    except:
+        return linkscrawledList
+
+
+def getAliases():
+    conn = client.indices.get_alias().keys()
+    print(conn)
 
 
 def updateAllFields(index, fieldDict):
