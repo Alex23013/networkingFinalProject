@@ -9,6 +9,7 @@ def getAllUrlsElastic():
 def distributeUrls(urls, clients):
     lenurls = len(urls)
     lenclients = len(clients)
+    print("EN ELASTIC SEARCH HAY: ", lenurls)
     num = lenurls // lenclients
     if lenurls % lenclients != 0:
         num += 1

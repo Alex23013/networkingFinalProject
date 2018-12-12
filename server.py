@@ -85,7 +85,7 @@ class ClientThread(Thread):
             msgType, size, data = con.receiveMsg(self.connection)
             print('DATA: ' + data)
             try:
-                if data == '':
+                if data == 'EMPTY!<>!':
                     break
                 elif msgType == AVAILABLE_CODE:
                     self.available = True
@@ -94,11 +94,12 @@ class ClientThread(Thread):
                 # elif msgType == SEND_URLS_CODE or msgType == SEND_CRAWLED_DATA_CODE:
                 #     print("Recieved: " + msgType + " size: " + size + " content" + data)
                 elif data == "exit":
+                    print("EXIT!!!!")
                     self.handle_disconnect()
             except socket.error as e:
                 print(e.message)
 
-        self.connection.close()
+        print('SALE DEL WHILE!!!!!')
 
     def safe_send(self, message):
         general_queue.put((message, self.client_data['id']))
@@ -128,7 +129,6 @@ ms.start()
 
 
 class CommandLineInterface(object):
-    global ids
 
     def input_command(self, command):
         tokens = self.parse_command(command=command)
@@ -143,6 +143,7 @@ class CommandLineInterface(object):
 
     def crawl_first_url(self, url):
         """Send the url to the crawler"""
+        global ids
         save(createDict(url, "", "", False))
         while True:
             connec, addr = conn.accept()

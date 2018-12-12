@@ -8,7 +8,7 @@ import sys
 
 host = '192.168.197.162'
 hostserver = "0.0.0.0"
-port = 50003
+port = 50001
 chunk_size = 1024
 
 
@@ -17,7 +17,7 @@ def receiveMsg(sock):
     msgType = msgType.decode()
     print('Tipo de mensaje', msgType)
     if msgType == AVAILABLE_CODE:
-        return msgType, '', ''
+        return msgType, '', msgType
 
     if msgType == ACKNOWLEDGE_CODE or msgType == ERROR_CODE:
         data = sock.recv(CODE_SIZE)
@@ -39,12 +39,14 @@ def receiveMsg(sock):
 
 def sendMsg(sock, response):
     if len(response) > chunk_size:
-        fragments = prt.fragment_message(response, chunk_size)
-        for i in range(len(fragments)):
-            sock.sendall(fragments.encode())
-    else:
-        print("rspo: ", response)
         sock.sendall(response.encode())
+
+        # fragments = prt.fragment_message(response, chunk_size)
+        # for i in range(len(fragments)):
+        #     sock.sendall(fragments[i].encode())
+    else:
+        print("Sending: ", response)
+        sock.sendall(str(response).encode())
 
 
 def connectionClient():
