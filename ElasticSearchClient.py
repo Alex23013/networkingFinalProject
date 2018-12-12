@@ -2,7 +2,7 @@ from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
 # name of index(like table)
 IP_PORT_SERVER = '192.168.197.251:9200'
-INDEX = 'pepito13'
+INDEX = 'pepito31'
 
 connections.create_connection(timeout=60)
 

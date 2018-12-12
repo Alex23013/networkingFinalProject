@@ -29,7 +29,7 @@ def process_url(url_id):
         for i in links_dicts:
             es.save(i)
         es.updateAllFields(id, update_dict)
-    except expression as identifier:
+    except:
         print(f"C>   ERROR: something gone wrong with: '{url}'")
     print(f"C>   DONE: crawled without any problems")
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         # Receive URLS
         # TODO: check if the receive network block the process until it receives a message.
         mtype, size, content = con.receiveMsg(socket)
-        print(f"> MSG type: {mtype}, Content size: {content}")
+        print(f"> MSG type: {mtype}, Content size: {content} \n Len: {len(content)}")
         message  = ''.join([mtype, size, content]) 
         urls, ids  = pro.parse_urls_message(message)
         print(f" >> URLS & IDS: {urls} \n {ids}")

@@ -110,7 +110,11 @@ def parse_urls_message(message):
     urls = []
     ids = []
     for i in range(urls_size):
-        url_size = int(message[idx:idx + NUMBER_SIZE])
+        url_size = 0
+        try:
+            url_size = int(message[idx:idx + NUMBER_SIZE])
+        except:
+            pass
         idx += NUMBER_SIZE
 
         id = message[idx:idx + ID_SIZE]
