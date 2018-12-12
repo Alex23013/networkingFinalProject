@@ -28,12 +28,17 @@ def compose_urls(urls, ids):
         print("ERROR: URL list and ID list must have the same size.")
         return ''
 
-    composed = [SEND_URLS_CODE, str(len(urls)).zfill(NUMBER_SIZE)]
+    composed = [SEND_URLS_CODE]
+    content = [str(len(urls)).zfill(NUMBER_SIZE)]
     for url, id in zip(urls, ids):
-        composed.append(str(len(url)).zfill(NUMBER_SIZE))
+        content.append(str(len(url)).zfill(NUMBER_SIZE))
         # TODO: check if the ids are strings
-        composed.append(str(id).zfill(NUMBER_SIZE))
-        composed.append(url)
+        content.append(str(id).zfill(NUMBER_SIZE))
+        content.append(url)
+
+    content_str = ''.join(content)
+    composed.append(str(len(content_str)).zfill(NUMBER_SIZE))
+    composed.append(content_str)
 
     return ''.join(composed)
 
@@ -47,15 +52,20 @@ def compose_crawled(main_id, urls, text, content_type):
     text: the text content of the crawled url.
     '''
     # TODO: check if the ids are strings
-    composed = [SEND_CRAWLED_DATA_CODE, str(main_id).zfill(NUMBER_SIZE),
-                str(len(urls)).zfill(NUMBER_SIZE)]
+    composed = [SEND_CRAWLED_DATA_CODE]
+    content = [str(main_id).zfill(NUMBER_SIZE),
+               str(len(urls)).zfill(NUMBER_SIZE)]
     for url in urls:
-        composed.append(str(len(url)).zfill(NUMBER_SIZE))
-        composed.append(url)
+        content.append(str(len(url)).zfill(NUMBER_SIZE))
+        content.append(url)
 
-    composed.append(str(len(text)).zfill(NUMBER_SIZE))
-    composed.append(text)
-    composed.append(content_type)
+    content.append(str(len(text)).zfill(NUMBER_SIZE))
+    content.append(text)
+    content.append(content_type)
+
+    content_str = ''.join(content)
+    composed.append(str(len(content_str)).zfill(NUMBER_SIZE))
+    composed.append(content_str)
 
     return ''.join(composed)
 
@@ -83,7 +93,8 @@ def parse_urls_message(message):
     Parses an URLS message.
     Returns a list of URLs and a list IDs
     '''
-    idx = 4
+    idx = MESSAGE_TYPE_SIZE + NUMBER_SIZE # ignoring type and content size
+
     urls_size = int(message[idx:idx + NUMBER_SIZE])
     idx += NUMBER_SIZE
 
@@ -110,7 +121,7 @@ def parse_crawled_message(message):
     Returns the main ID, a list of urls, the crawled text and content type.
     '''
 
-    idx = 4
+    idx = MESSAGE_TYPE_SIZE + NUMBER_SIZE # ignoring type and content size
     # TODO: check if the ids are strings
     main_id = int(message[idx:idx + NUMBER_SIZE])
     idx += NUMBER_SIZE
