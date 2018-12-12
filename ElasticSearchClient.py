@@ -4,7 +4,7 @@ from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 IP_PORT_SERVER = '192.168.197.251:9200'
 INDEX = 'links'
 
-connections.create_connection()
+connections.create_connection(timeout=60)
 
 connections.configure(
     default={
