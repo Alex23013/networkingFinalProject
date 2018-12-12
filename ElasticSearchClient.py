@@ -1,4 +1,4 @@
-from elasticsearch_dsl import Document, Search, connections, Text
+from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
 connections.create_connection()
 client = connections.get_connection()
@@ -11,6 +11,7 @@ class Link(Document):
     url = Text()
     text = Text()
     type = Text()
+    crawled = Boolean()
 
     class Index:
         name = INDEX
@@ -27,6 +28,7 @@ def save(dataDict):
     newlink.url = dataDict['url']
     newlink.text = dataDict['text']
     newlink.type = dataDict['type']
+    newlink.crawled = dataDict['crawled']
 
     # saving in index(like a table)
     newlink.save()
@@ -39,6 +41,27 @@ def listAll():
     for link in results:
         # print (link)
         print(link.meta.id, link.url, link.type)
+
+def listAllDontCrawled():
+    linkscrawledList = []
+    try:
+        s = Search(using=client, index=INDEX).filter("term", crawled=False)
+        results = s.execute()
+
+        for link in results:
+            print(link.meta.id, link.url, link.type, link.crawled)
+            auxlink = Link()
+            auxlink.id = link.meta.id
+            auxlink.url = link.url
+            auxlink.type = link.type
+            auxlink.crawled = link.crawled
+            auxlink.text = link.text
+
+            linkscrawledList.append(auxlink)
+
+        return linkscrawledList
+    except:
+        return linkscrawledList
 
 
 def getAliases():
@@ -62,6 +85,7 @@ def updateAllFields(index, fieldDict):
     searched.url = fieldDict['url']
     searched.text = fieldDict['text']
     searched.type = fieldDict['type']
+    searched.crawled = fieldDict['crawled']
 
     # saving in index(like a table)
     searched.save()
@@ -69,13 +93,16 @@ def updateAllFields(index, fieldDict):
 
 if __name__ == '__main__':
     new = {
-        'url': "www.aaaaa.com",
+        'url': "www.id1.com",
         'type': "link2",
         'text': "tercertest",
-        'id': 2
+        'crawled': False,
+        'id': 1
     }
 
     save(new)
+    listAllDontCrawled()
+    print("----------------")
     listAll()
     '''
     new = {
