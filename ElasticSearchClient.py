@@ -49,6 +49,12 @@ def listAll():
         # print (link)
         print(link.meta.id, link.url, link.type)
 
+def countItems():
+    s = Search(using=client, index=INDEX)
+    results = s.execute()
+
+    return results.count()
+
 def createDict(url, text, type, crawled=False):
     newdict = {
         'url': url,
