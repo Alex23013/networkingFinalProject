@@ -8,7 +8,7 @@ import sys
 
 host = '192.168.197.162'
 hostserver = "0.0.0.0"
-port = 50003
+port = 50004
 chunk_size = 1024
 
 
@@ -28,7 +28,7 @@ def receiveMsg(sock):
         sizeInt = int(size.decode())
 
         datastr = ""
-        num = sizeInt - NUMBER_SIZE - TYPE_SIZE
+        num = sizeInt
         print('INITIAL: ', num)
         while num > 0:
             print('num:', num)
