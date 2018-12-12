@@ -21,7 +21,7 @@ def process_url(url_id):
         text, links = crw.extract_text_links(url)
 
     print("C>   Type: ", content_type)
-    print("C>   Link size: ", len(links))
+    # print("C>   Link size: ", len(links))
     links_dicts = [es.createDict(i,'','') for i in links]
     update_dict = es.createDict('', text, content_type, True)
 
