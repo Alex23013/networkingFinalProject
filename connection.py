@@ -6,9 +6,9 @@ from protocol import (NUMBER_SIZE, TYPE_SIZE, CODE_SIZE,
 import protocol as prt
 import sys
 
-host = '127.0.0.1'
+host = '192.168.197.162'
 hostserver = "0.0.0.0"
-port = 50000
+port = 50003
 chunk_size = 1024
 
 

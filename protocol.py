@@ -113,9 +113,9 @@ def parse_urls_message(message):
         url_size = int(message[idx:idx + NUMBER_SIZE])
         idx += NUMBER_SIZE
 
-        id = message[idx:idx + NUMBER_SIZE]
-        ids.append(int(id))  # TODO: check if the ids are strings
-        idx += NUMBER_SIZE
+        id = message[idx:idx + ID_SIZE]
+        ids.append(id)  # TODO: check if the ids are strings
+        idx += ID_SIZE
 
         url = message[idx:idx + url_size]
         urls.append(url)
@@ -132,8 +132,8 @@ def parse_crawled_message(message):
 
     idx = MESSAGE_TYPE_SIZE + NUMBER_SIZE # ignoring type and content size
     # TODO: check if the ids are strings
-    main_id = int(message[idx:idx + NUMBER_SIZE])
-    idx += NUMBER_SIZE
+    main_id = message[idx:idx + ID_SIZE]
+    idx += ID_SIZE
 
     urls_size = int(message[idx:idx + NUMBER_SIZE])
     idx += NUMBER_SIZE

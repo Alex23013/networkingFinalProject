@@ -2,7 +2,7 @@ from elasticsearch_dsl import Document, Search, connections, Text, Boolean
 
 # name of index(like table)
 IP_PORT_SERVER = '192.168.197.251:9200'
-INDEX = 'links'
+INDEX = 'pepito11'
 
 connections.create_connection(timeout=60)
 
@@ -98,7 +98,7 @@ def createDict(url, text, type, crawled=False):
 def updateAllFields(index, fieldDict):
     searched = searchByIndex(index)
     if not searched:
-        print("ERROR: Index dont exist")
+        print(f"ERROR: Index dont exist {index}")
         return
     # setting data
     # searched.meta.id = fieldDict['id']
