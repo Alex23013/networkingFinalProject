@@ -8,7 +8,7 @@ import sys
 
 host = '192.168.197.162'
 hostserver = "0.0.0.0"
-port = 50004
+port = 50006
 chunk_size = 1024
 
 
